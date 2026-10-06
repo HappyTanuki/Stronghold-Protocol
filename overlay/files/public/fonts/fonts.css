@@ -1,0 +1,3 @@
+/* The upstream Bender/Novecento asset bundle is not shipped with this display overlay.
+   Keep the upstream CSS fallback stacks unchanged. Nanum Gothic is declared only in
+   /i18n/ko/ko.css, so this compatibility stylesheet intentionally defines no fonts. */

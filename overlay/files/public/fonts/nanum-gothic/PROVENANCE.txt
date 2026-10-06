@@ -1,0 +1,5 @@
+Nanum Gothic Regular and Bold bundled for offline use.
+Source: existing NanumGothic-Bold.ttf and NanumGothic-Regular.ttf files in this directory.
+Copyright: NHN Corporation (2010); see OFL.txt.
+License: SIL Open Font License 1.1 (OFL.txt).
+These files are not the proprietary game fonts downloaded by tools/fetch-assets.mjs.

@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "adapter": "stronghold-korean-extract",
+  "adapterVersion": "1.0.0",
+  "supportedClient": {
+    "tag": "Arknights_KR",
+    "version": "41.0.1",
+    "layout": "windows-yostar"
+  },
+  "snapshot": {
+    "bCatalog": {
+      "sha256": "110e3e5d6dde5343c96d79ef4de58a521d4d708930a1c6f6a40db2d074ab262b",
+      "versionId": "26-07-24-05-40-00_3865b8",
+      "manifestName": "27a5afbf4a4bbf4c39c27c8d6d7b8ad5.idx",
+      "manifestVersion": "V072"
+    },
+    "hCatalog": {
+      "sha256": "a2bbb5075b8033aa2ea60c08cd71dad9d30f3e3dbda8020d8bb44c4d6d2062d0",
+      "versionId": "26-09-28-06-15-53_71ac81",
+      "manifestName": "428f836897351b8cd1a5bcad47721aec.idx",
+      "manifestVersion": "V072"
+    },
+    "persistentCatalog": {
+      "sha256": "feeac32fc97ac9bed07fc4ab17f3f5a06e0d9ceb98dd4dc00a0bc5ba58dd0b55",
+      "manifestName": "428f836897351b8cd1a5bcad47721aec.idx",
+      "manifestVersion": "V072"
+    }
+  },
+  "upstream": {
+    "head": "763e224b8d72c2362e70a8f1283a74e644195712",
+    "files": {
+      "tools/local-extract/extract.py": "99504062b1a3bd664e68e640284fbda2ae80fb99a3a177e8fb84b5d930ebf4cf",
+      "tools/local-extract/aklz4.py": "03f0b5c7d191cde58f7515fa2376a6d1c5acbe6f1922e8568496f7d3e7c8bc90",
+      "tools/crop-board-atlas.mjs": "8d55a4bb11ae4cae2fc4120095e6b415c04d0fc3160feed1397878bb0a65a7f6",
+      "public/js/render/board3d/atlas.js": "7154880c5148acf14024ee99347588b7b48f94ab2e67c9fb860621ede9ae6511",
+      "public/js/render/board3d/load.js": "11d63322b681275d19c2dd2255a1c72c2a80e7aa67203c50b93119770bc6e906",
+      "public/js/render/board3d/layout.js": "0ce5a26f1524022a99681ce3d35e3fdc65e80e7292cf0e00186dbbbe2b4a0232",
+      "public/js/render/board3d/materials.js": "d283b5359c9e9dba5caa4def8fad87e742cfcf5d35f1da0d4752ced86a38ca11",
+      "public/js/render/board3d/obj.js": "3a43a98f9c058f145fd6c7047f939b8c8b406e222dddfe3d644285149a3bd852"
+    }
+  },
+  "boardProfile": {
+    "groups": [
+      "map/autochess",
+      "mesh/map_autochess_bkg",
+      "mesh/s_background_common",
+      "mesh/s_common_box_01",
+      "mesh/s_wind_device",
+      "map/fx",
+      "map/common",
+      "map/water"
+    ],
+    "board3dSurfaceCount": 36,
+    "images": {
+      "D": ["map/autochess", "TX_autochessi_D"],
+      "N": ["map/autochess", "TX_autochessi_N_rgb"],
+      "R": ["map/autochess", "TX_autochessi_M_rough"],
+      "E": ["map/autochess", "TX_autochessi_E"],
+      "common": ["map/autochess", "TX_autochessi_common_D"],
+      "commonE": ["map/autochess", "TX_autochessi_common_E"],
+      "BG": ["map/autochess", "TX_autochessi_BG"],
+      "wind": ["map/common", "TX_wind_device"],
+      "gate": ["map/fx", "[opt]merged_textures"],
+      "waterN": ["map/water", "[ucp]TX_water_normal"],
+      "caustics": ["map/water", "TX_Caustics256"],
+      "noise": ["map/water", "T_noise_clouds_01"]
+    },
+    "meshes": {
+      "crate": ["mesh/s_common_box_01", "pCube2"],
+      "blower": ["mesh/s_wind_device", "S_wild_wind_device"],
+      "bgPlane": ["mesh/s_background_common", "pPlane1"]
+    },
+    "gateNodes": {
+      "startDown": "Start_down",
+      "startUp": "Start_up",
+      "startBack": "Start_back",
+      "endDown": "Start_down1",
+      "endUp": "Start_up1"
+    }
+  },
+  "realFixtures": {
+    "mesh/s_wind_device": {
+      "inputSha256": "d806fb838c781506f892ecdad0660fa5c5bf8cf559396d89c82f3ed10f353802",
+      "objSha256Lf": "aa7c1b00bd139e5f244f4598b301b63537e9218f123e9f706423d64f44e704ff",
+      "mesh": "S_wild_wind_device",
+      "vertices": 172,
+      "faces": 126
+    },
+    "mesh/s_common_box_01": {
+      "inputSha256": "a24dd7e6a9a928595572c9a35a632d1d8a0dfd1ae7f995000a8300be9eab619d",
+      "objSha256Lf": "e6fcb058aee0dd8f56dabb1a4a235b413fd7c0ba8787c78b88db15a0a0d5867c",
+      "mesh": "pCube2",
+      "vertices": 25,
+      "faces": 30
+    },
+    "emoticon/basic_2": {
+      "inputSha256": "411120218ef5c07c60df20c307ba1aae9f658367091a5afd6ea7aba2a84bac1b",
+      "sprite": "pic_call_battle",
+      "width": 120,
+      "height": 120,
+      "rgbaSha256": "e302f482a36f5d669f06b2ffddd0c05fb87c52d92356acac2250494df5da113d"
+    },
+    "map/autochess": {
+      "inputSha256": "15b9511302743593e88e87bbf40b38f1f8ce8030533c1147119955e4cf7fc73e",
+      "diffuse": "TX_autochessi_D",
+      "diffuseWidth": 2048,
+      "diffuseHeight": 2048,
+      "diffuseRgbaSha256": "b6ad812ff559e511e477866d2e667851d0442d3a8c7acdd96fefe6c1b45f7566",
+      "crateSideRect": [1087, 1938, 134, 108],
+      "crateSideRgbaSha256": "70f03679227f01cae69e741296da438f4bf3ea7d67d8ee5beafae75f668b7a2f",
+      "crateTopRect": [1222, 1938, 134, 108],
+      "crateTopRgbaSha256": "64009d6a09f1457cec46dc5bf941e8b29af59444ecd0205303efa8e1fb2814da"
+    },
+    "normalDxt5nmAg": {
+      "source": "TX_autochessi_N",
+      "textureFormat": 12,
+      "sourceWidth": 1024,
+      "sourceHeight": 1024,
+      "sourceRgbaSha256": "86cf5eb8ad2d6e873117a9801b5c8a6cdf8297158b008d887ba152dbcfff29d1",
+      "derivedRgbSha256": "60702280dac6bca55c20d3cb25146df31098adbd3e37588963518dcc5234dd8c",
+      "firstPixel": [128, 128, 255],
+      "meanZ": 249.05605602264404,
+      "mustNotBeConstantZ": 128
+    },
+    "roughness": {
+      "source": "TX_autochessi_M",
+      "derivedRgbSha256": "64242951190f7ded8ab9cbf979fc5eb4ce849e997b36b79f0e3a579d1670fb94"
+    }
+  },
+  "knownLimitations": {
+    "missingEmoteBundles": [
+      "emoticon/fooldoctor",
+      "emoticon/foolamiya",
+      "emoticon/foolwisdel"
+    ],
+    "zeroExportTypeGroup": "spine/token_10039_ulpia_block",
+    "enemySpines": {
+      "status": "unverified",
+      "ids": ["enemy_1305_mhslim", "enemy_1305_mhslim_2"]
+    },
+    "noCnFallback": true
+  }
+}

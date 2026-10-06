@@ -1,0 +1,72 @@
+{
+  "fixture_version": 1,
+  "freeze": {
+    "upstream_head": "763e224b8d72c2362e70a8f1283a74e644195712",
+    "game": "Arknights_KR",
+    "game_version": "41.0.1",
+    "active_catalog_version_id": "26-09-28-06-15-53_71ac81",
+    "commands": {
+      "inspect": ["inspect", "--upstream", "<upstream>", "--install", "<game-root>", "--all-jobs"],
+      "extract_only": ["extract", "--upstream", "<upstream>", "--install", "<game-root>", "--only", "<group-prefix>", "--out-root", "<new-directory>"],
+      "extract_board": ["extract", "--upstream", "<upstream>", "--install", "<game-root>", "--profile", "board", "--out-root", "<new-directory>"],
+      "validate": ["validate", "--upstream", "<upstream>", "--out-root", "<completed-directory>"]
+    },
+    "exit_codes": {"usage_or_source_selection": 2, "decode_export_or_validation": 1},
+    "manifest_core_keys": ["version", "source", "count", "groups"],
+    "asset_url_prefix": "/assets/local/",
+    "board_required_groups": ["map/autochess", "mesh/map_autochess_bkg", "mesh/s_background_common", "mesh/s_common_box_01", "mesh/s_wind_device", "map/fx", "map/common", "map/water"]
+  },
+  "identity": {
+    "app_info": {"path": "Arknights_Data/app.info", "sha256": "3cb5d6bdc9dc8859118f803c9ee944ea87f94e2acf27cc244fdfc4c52e0696f6", "contains": ["Yostar", "Arknights_KR"]},
+    "launcher_config": {"path": "game-launcher-config.json", "sha256": "4f1b2ad1abf5d7a4e21da1caf685ef2f4b78e2ba3f0dd1771bae9a44700786d4", "tag": "Arknights_KR", "version": "41.0.1"},
+    "game_manifest": {"path": "manifest.json", "sha256": "b4b3e5e09fe52249b5712ed123303767add00bcd7b05bca0929e53dc1464f69e", "name": "Arknights_KR", "version": "41.0.1"}
+  },
+  "catalogs": {
+    "B": {"path": "Arknights_Data/StreamingAssets/AB/Windows/hot_update_list.json", "sha256": "110e3e5d6dde5343c96d79ef4de58a521d4d708930a1c6f6a40db2d074ab262b", "version_id": "26-07-24-05-40-00_3865b8", "manifest_name": "27a5afbf4a4bbf4c39c27c8d6d7b8ad5.idx", "manifest_version": "V072"},
+    "H": {"path": "Arknights_Data/PersistentData/Bundles/hot_update_list.json", "sha256": "a2bbb5075b8033aa2ea60c08cd71dad9d30f3e3dbda8020d8bb44c4d6d2062d0", "version_id": "26-09-28-06-15-53_71ac81", "manifest_name": "428f836897351b8cd1a5bcad47721aec.idx", "manifest_version": "V072"},
+    "persistent": {"path": "Arknights_Data/PersistentData/Bundles/persistent_res_list.json", "sha256": "feeac32fc97ac9bed07fc4ab17f3f5a06e0d9ceb98dd4dc00a0bc5ba58dd0b55", "manifest_name": "428f836897351b8cd1a5bcad47721aec.idx", "manifest_version": "V072"}
+  },
+  "upstream_files": {
+    "tools/local-extract/extract.py": "99504062b1a3bd664e68e640284fbda2ae80fb99a3a177e8fb84b5d930ebf4cf",
+    "tools/local-extract/aklz4.py": "03f0b5c7d191cde58f7515fa2376a6d1c5acbe6f1922e8568496f7d3e7c8bc90",
+    "tools/crop-board-atlas.mjs": "8d55a4bb11ae4cae2fc4120095e6b415c04d0fc3160feed1397878bb0a65a7f6",
+    "public/js/render/board3d/atlas.js": "7154880c5148acf14024ee99347588b7b48f94ab2e67c9fb860621ede9ae6511",
+    "public/js/render/board3d/load.js": "11d63322b681275d19c2dd2255a1c72c2a80e7aa67203c50b93119770bc6e906",
+    "public/js/render/board3d/layout.js": "0ce5a26f1524022a99681ce3d35e3fdc65e80e7292cf0e00186dbbbe2b4a0232",
+    "public/js/render/board3d/materials.js": "d283b5359c9e9dba5caa4def8fad87e742cfcf5d35f1da0d4752ced86a38ca11",
+    "public/js/render/board3d/obj.js": "3a43a98f9c058f145fd6c7047f939b8c8b406e222dddfe3d644285149a3bd852"
+  },
+  "inputs": {
+    "wind": {"root": "B", "relative_path": "arts/maps/common/meshes/s_wind_device.ab", "size": 12552, "sha256": "d806fb838c781506f892ecdad0660fa5c5bf8cf559396d89c82f3ed10f353802", "active_H_record": {"hash": "38d2814d9ecceec909dde8111b8c9120", "md5": "864595bdb0ce68f7f03a96048bb5f989", "totalSize": 9705, "abSize": 12552, "pid": "lpack_init5", "cid": 5374}, "base_B_record": {"hash": "38d2814d9ecceec909dde8111b8c9120", "md5": "864595bdb0ce68f7f03a96048bb5f989", "totalSize": 12552, "abSize": 12552}, "mesh": {"name": "S_wild_wind_device", "path_id": "-2008744330629149944", "obj_sha256": "aa7c1b00bd139e5f244f4598b301b63537e9218f123e9f706423d64f44e704ff", "vertices": 172, "faces": 126}},
+    "crate": {"root": "B", "relative_path": "arts/maps/common/meshes/s_common_box_01.ab", "size": 13974, "sha256": "a24dd7e6a9a928595572c9a35a632d1d8a0dfd1ae7f995000a8300be9eab619d", "active_H_record": {"hash": "a51a47788826a3c32977939e6edf5d1b", "md5": "1667f77c9bb5f79965a7599ca762d27e", "totalSize": 9789, "abSize": 13974, "pid": "lpack_init5", "cid": 5356}, "base_B_record": {"hash": "a51a47788826a3c32977939e6edf5d1b", "md5": "1667f77c9bb5f79965a7599ca762d27e", "totalSize": 13974, "abSize": 13974}, "mesh": {"name": "pCube2", "path_id": "3759356499462448550", "obj_sha256": "e6fcb058aee0dd8f56dabb1a4a235b413fd7c0ba8787c78b88db15a0a0d5867c", "vertices": 25, "faces": 30}},
+    "sprite": {"root": "H", "relative_path": "ui/emoticon/theme/[uc]emoticon_autochess_basic_2.ab", "size": 75378, "sha256": "411120218ef5c07c60df20c307ba1aae9f658367091a5afd6ea7aba2a84bac1b", "active_H_record": {"hash": "fab4cf7afceb2c8e0b90a28c1159b23a", "md5": "75061c44a63eaaafbaa69346659d04b9", "totalSize": 65529, "abSize": 75378, "pid": "lpack_init7", "cid": 10713}, "persistent_record": {"hash": "fab4cf7afceb2c8e0b90a28c1159b23a", "md5": "75061c44a63eaaafbaa69346659d04b9", "totalSize": 65529, "abSize": 75378, "pid": "lpack_init7", "cid": 10562}, "sprites": {
+      "pic_call_battle": {"size": [120, 120], "rgba_sha256": "e302f482a36f5d669f06b2ffddd0c05fb87c52d92356acac2250494df5da113d"},
+      "pic_playingcool_battle": {"size": [120, 120], "rgba_sha256": "8f40cdac900368651fa647ddd99c06ad61686aefb740a151988af8dc859418fb"},
+      "pic_noproblem_battle": {"size": [120, 120], "rgba_sha256": "4393ecad68808674bb6cd62c802c241a61f547359cf62f60bd2b59d50d7a5f1c"},
+      "pic_respect_battle": {"size": [120, 120], "rgba_sha256": "0918426bf1807f982a57dcccf31f21c9d834df520e37558571af8696b83a1c1c"},
+      "pic_dying_battle": {"size": [120, 120], "rgba_sha256": "4eea15c01debf3ec72beaddc9562a5614ebaac99f8fd2e153a9e3de4baedfca2"},
+      "pic_sad_battle": {"size": [120, 120], "rgba_sha256": "cf9c749958b97aa01442d297e6dc3e79a0e13afc6af696ed6c501df069d8a8c5"}
+    }},
+    "board": {"root": "H", "relative_path": "arts/maps/map_autochess/res.ab", "size": 4005111, "sha256": "15b9511302743593e88e87bbf40b38f1f8ce8030533c1147119955e4cf7fc73e", "active_H_record": {"hash": "3f0bb82ff30e220afe2515c3c57eed16", "md5": "f8700e81fc93a48a49eefcd33ae6ee1c", "totalSize": 3254149, "abSize": 4005111, "pid": "lpack_init8", "cid": 10913}, "persistent_record": {"hash": "3f0bb82ff30e220afe2515c3c57eed16", "md5": "f8700e81fc93a48a49eefcd33ae6ee1c", "totalSize": 3254149, "abSize": 4005111, "pid": "lpack_init8", "cid": 10697}},
+    "map_fx": {"root": "H", "relative_path": "arts/effects/[pack]map.ab", "size": 140942, "sha256": "87212b035ba3aecf6c12faff9950313b21e8988c0ad983683470c666009fe652", "active_H_record": {"hash": "ac34c1946a3774f7e4d26dc0027f53a8", "md5": "58d5e2a1a74644e912e03cbc1adb0678", "totalSize": 99795, "abSize": 140942, "pid": "lpack_init5", "cid": 5342}, "start_back": {"parent": "[opt]start_box", "node_path_id": "4107516219961245417", "mesh_name": "Start_back_4235658232235163369", "mesh_path_id": "4235658232235163369", "mesh_sha256": "7b1c28467d3a09d71afbec3c839fac94c68f6fec500e23cd04d47fb2d00e93e3", "vertices": 16, "faces": 8, "scaled_alternative_path_id": "-2180423446155641033", "scaled_alternative_sha256": "34469da35db948feefa07b0611bbe8237b65a9ea16f08157c105390584747763"}}
+  },
+  "board_goldens": {
+    "textures": {
+      "TX_autochessi_D": {"format": 10, "size": [2048, 2048], "rgba_sha256": "b6ad812ff559e511e477866d2e667851d0442d3a8c7acdd96fefe6c1b45f7566"},
+      "TX_autochessi_E": {"format": 10, "size": [512, 512], "rgba_sha256": "0c12adf184fd1ea519e8ce25bceb4d6e1486520de2297280fbc30c4515145bc0"},
+      "TX_autochessi_M": {"format": 25, "size": [512, 512], "rgba_sha256": "f74bf68277140851787292d78b1a8d84963a94b357b28c5b5cc88075cc497e3d"},
+      "TX_autochessi_common_D": {"format": 25, "size": [1024, 1024], "rgba_sha256": "487c1d5e14f8beb4a5e5093b808e0135d3c41d81148a99e387e105bcfc7ad5e7"},
+      "TX_autochessi_BG": {"format": 10, "size": [1024, 1024], "rgba_sha256": "681b1b728b54d74c9436a99a9bffa1d13fced8293f0021d9cd9e86a69c2a78a5"},
+      "TX_autochessi_N": {"format": 12, "size": [1024, 1024], "rgba_sha256": "86cf5eb8ad2d6e873117a9801b5c8a6cdf8297158b008d887ba152dbcfff29d1"},
+      "TX_autochessi_common_E": {"format": 10, "size": [1024, 1024], "rgba_sha256": "a17abc9b92eae38ca47421b2bcf705e5150e0dad14230b846da0040c95fb67f6"}
+    },
+    "normal_regression": {"texture_format": 12, "expected_channels": "A,G", "sample_raw_rgba_0_0": [255, 128, 126, 128], "legacy_rg_blue_z_extrema": [128, 128], "legacy_rg_rgb_sha256": "4191e42d4c6760f3ad87c804b133f8729d7f8395e868bd90b3e74157ef7204d9", "dxt5nm_ag_rgb_sha256": "60702280dac6bca55c20d3cb25146df31098adbd3e37588963518dcc5234dd8c", "dxt5nm_ag_size": [1024, 1024], "dxt5nm_ag_sample_rgb_0_0": [128, 128, 255], "dxt5nm_ag_z_extrema": [128, 255]},
+    "roughness": {"derived_rgb_sha256": "64242951190f7ded8ab9cbf979fc5eb4ce849e997b36b79f0e3a579d1670fb94", "sample_0_0": [255, 240, 0]},
+    "atlas_orientation": {"top_down_rgba_sha256": "b6ad812ff559e511e477866d2e667851d0442d3a8c7acdd96fefe6c1b45f7566", "vertical_flip_rgba_sha256": "f7366f598af29b247c6cedbe70c8a069f9664530456677a8f701bfb7cca37901"},
+    "crate_crops": {
+      "crateSide": {"rect": [1087, 1938, 134, 108], "rgba_sha256": "70f03679227f01cae69e741296da438f4bf3ea7d67d8ee5beafae75f668b7a2f"},
+      "crateTop": {"rect": [1222, 1938, 134, 108], "rgba_sha256": "64009d6a09f1457cec46dc5bf941e8b29af59444ecd0205303efa8e1fb2814da"}
+    }
+  },
+  "known_unsupported": {"missing_groups": ["emoticon/fooldoctor", "emoticon/foolamiya", "emoticon/foolwisdel"], "zero_export_group": "spine/token_10039_ulpia_block"}
+}
