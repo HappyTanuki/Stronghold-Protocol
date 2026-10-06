@@ -281,3 +281,22 @@ index d967bd8..0fc2df5 100644
        ${touchUi
          ? html`<p class="set-hint">触屏操作：点击单位选中（撤退 / 出售）· 长按单位或卡牌查看详情 · 拖动部署后滑动选择朝向</p>`
          : html`<p class="set-hint">快捷键：<kbd>R</kbd> 刷新 · <kbd>F</kbd> 冻结 · <kbd>D</kbd> 升级 · <kbd>Q</kbd> 撤退选中干员 · <kbd>X</kbd> 出售选中干员 · <kbd>Space</kbd> 准备就绪 · <kbd>Esc</kbd> 关闭弹窗 · 右键查看详情</p>`}
+diff --git a/public/js/screens/room.js b/public/js/screens/room.js
+--- a/public/js/screens/room.js
++++ b/public/js/screens/room.js
+@@ -1,3 +1,4 @@
++import { lang, tr } from '../i18n/i18n.js';
+ // Room screen (同盟等待室): 4 seat cards (avatar frame, name, ready state, AI badge, host crown),
+ // host controls (difficulty picker, add/remove AI in co-op, start), invite code with copy code /
+ // copy link, ready toggle and leave.
+@@ -155,7 +156,9 @@
+ 
+ function InviteBox({ code, name, difficulty }) {
+   const copy = async (what) => {
+-    const ok = await copyText(what === 'code' ? code : `${inviteLink(code)} ${name}邀请你加入卫戍协议：盟约【${DIFFICULTY_NAMES[difficulty]}】`);
++    const ok = await copyText(what === 'code' ? code : (lang === 'ko'
++      ? `${inviteLink(code)} ${name} 박사님의 위수 협의: 맹약 초대 [${tr(DIFFICULTY_NAMES[difficulty])}]`
++      : `${inviteLink(code)} ${name}邀请你加入卫戍协议：盟约【${DIFFICULTY_NAMES[difficulty]}】`));
+     if (ok) toast(what === 'code' ? `已复制同盟密钥 ${code}` : '已复制邀请链接', 'success');
+     else toast('复制失败，请手动复制', 'warn');
+   };

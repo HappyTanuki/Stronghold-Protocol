@@ -15,6 +15,7 @@ const expectedModified = [
   'public/js/data.js',
   'public/js/main.js',
   'public/js/screens/lobby.js',
+  'public/js/screens/room.js',
   'public/js/ui/richText.js',
   'public/js/ui/settings.js',
   'public/js/ui/gameLogic.js',
