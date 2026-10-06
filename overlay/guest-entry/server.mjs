@@ -14,7 +14,7 @@ export function createGate({users,key,origin}) {
  const next=s=>{try{const u=new URL(s,origin);return u.origin===origin && u.pathname.startsWith('/stronghold_protocol/')?u.pathname+u.search+u.hash:'/stronghold_protocol/'}catch{return '/stronghold_protocol/'}};
  const attempts=new Map();
  return http.createServer(async(req,res)=>{
-  res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
+  res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','same-origin');
   const url=new URL(req.url,'http://local');const c=cookies(req);
   if(req.method==='GET'&&url.pathname==='/healthz'){res.writeHead(200);return res.end('ok')}
   if(req.method==='GET'&&url.pathname==='/authorize'){res.writeHead(allowed.has(decode(c['__Host-stronghold-entry']))?204:401);return res.end()}
