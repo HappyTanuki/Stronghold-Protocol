@@ -98,6 +98,18 @@ if (!has('public/js/main.js', "import './i18n/i18n.js';")
   throw new Error('overlay display-integration contract missing');
 }
 
+// Display-only profession glyphs: preserve every other asset-manifest field.
+const profPaths = JSON.parse(fs.readFileSync(path.join(overlay, 'scripts', 'prof-icon-paths.json'), 'utf8'));
+const assetFile = confined(root, 'data/assets.json');
+const assetData = JSON.parse(fs.readFileSync(assetFile, 'utf8'));
+const professions = ['caster', 'medic', 'pioneer', 'sniper', 'special', 'support', 'tank', 'warrior'];
+if (JSON.stringify(Object.keys(profPaths).sort()) !== JSON.stringify([...professions].sort())
+  || professions.some(p => profPaths[p] !== `/assets/prof/glyph-v1/${p}.png` || !assetData.prof?.icon?.[p])) {
+  throw new Error('invalid profession glyph override');
+}
+assetData.prof.icon = { ...assetData.prof.icon, ...profPaths };
+fs.writeFileSync(assetFile, JSON.stringify(assetData, null, 2) + '\n');
+
 const manifest = path.join(artifacts, 'local-assets.json');
 if (sha(manifest) !== lock.assetManifest) throw new Error('asset manifest SHA mismatch');
 const manifestTarget = confined(root, 'data/local-assets.json');

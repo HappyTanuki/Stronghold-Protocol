@@ -1,0 +1,10 @@
+{
+  "caster": "/assets/prof/glyph-v1/caster.png",
+  "medic": "/assets/prof/glyph-v1/medic.png",
+  "pioneer": "/assets/prof/glyph-v1/pioneer.png",
+  "sniper": "/assets/prof/glyph-v1/sniper.png",
+  "special": "/assets/prof/glyph-v1/special.png",
+  "support": "/assets/prof/glyph-v1/support.png",
+  "tank": "/assets/prof/glyph-v1/tank.png",
+  "warrior": "/assets/prof/glyph-v1/warrior.png"
+}
