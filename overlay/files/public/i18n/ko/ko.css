@@ -1,8 +1,10 @@
+@import url('/fonts/fonts.css?v=0f8dad445d7f');
 /* Korean-only font coverage; all other glyphs retain upstream font stacks. */
 @font-face { font-family: 'Nanum Gothic'; src: url('/fonts/nanum-gothic/NanumGothic-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+1100-11FF, U+3130-318F, U+A960-A97F, U+AC00-D7A3, U+D7B0-D7FF; }
 @font-face { font-family: 'Nanum Gothic'; src: url('/fonts/nanum-gothic/NanumGothic-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; unicode-range: U+1100-11FF, U+3130-318F, U+A960-A97F, U+AC00-D7A3, U+D7B0-D7FF; }
 
 :root.lang-ko {
+  --font-mono: 'Nanum Gothic', 'Bender', 'Oxanium', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   --font-cjk: 'Nanum Gothic', 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Source Han Sans SC', 'Noto Sans CJK SC', sans-serif;
   --font-num: 'Nanum Gothic', 'Bender', 'Rajdhani', 'Oxanium', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --font-display: 'Nanum Gothic', 'Novecento', 'Novecento Wide', 'Oxanium', 'Rajdhani', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
