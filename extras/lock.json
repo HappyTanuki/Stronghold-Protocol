@@ -1,0 +1,34 @@
+{
+  "upstream": "c2a2ef778cf728ff29b953b9842b2a39b1e9cbea",
+  "appVersion": "0.2.1",
+  "modified": [
+    "public/js/audio.js",
+    "public/js/data.js",
+    "public/js/main.js",
+    "public/js/ui/gameLogic/settings.js",
+    "public/js/ui/settings.js",
+    "test/ui/gameLogic.test.js"
+  ],
+  "patchSha256": "56da26fe0fdabf28fc340c3484203adc4bdfd6d729855474fba73800e95c1603",
+  "preimages": {
+    "public/js/audio.js": "9577c292a77b4a35e6fe37a3041d9a62fca5ae69a64e1413fe0a346dd9589824",
+    "public/js/data.js": "73e710aab0cf238ef0c9867ebd4e8c9222aacb39548d33c2b31b2003bb1b8c78",
+    "public/js/main.js": "29f9f299a6b162b104c5222bcf4f43e631a79e03b59c8ec2ce6d42b216874a5f",
+    "public/js/ui/gameLogic/settings.js": "e525484b403e3cdc00b0c28beb28b4651e6d1aa30f9ec8b6e1b035490e42b69d",
+    "public/js/ui/settings.js": "0adb357a14ea783abcb3f96c7eb8a1c696e6eb2ea74e3b3aa776c79378dbbdec",
+    "test/ui/gameLogic.test.js": "e9265612e3f5fbeaa59ed4b5f030b5605e8c106cb701f4d64e1189d7f3fb67b5"
+  },
+  "postimages": {
+    "public/js/audio.js": "23f69b4a15299f536d35f37a43f0afcbd02316fd67ed21b179c9b8bcc107dc80",
+    "public/js/data.js": "5c953b7fbffd4bb0305bdb6cc359c0c3d7646a325428e1964318ab6fc74aaa62",
+    "public/js/main.js": "1585eefd9cfd5577db3305b9e4b97088e946c3e9914d4b3b0e9858f2ae39da74",
+    "public/js/ui/gameLogic/settings.js": "e1796987a96d25c43850ed8746250ac0563a9520f6f390ccbe04d350fe2f4151",
+    "public/js/ui/settings.js": "0f161fc8cae798dc64d43066bb6e51106ad02a6277507aa67519558ba0cfbb7c",
+    "test/ui/gameLogic.test.js": "160fa035a817a4d6174053fd6cb02f44bd9790eb86f1e7cc26526d188bbaa63c"
+  },
+  "artifacts": {
+    "assets.json": "f8f0c7bb9036683bc6e62893f4eaa55274b8501c16c4d74ba094af997f1fa940",
+    "local-assets.json": "bbc04a11eec5f04c95669ccc489b3b63e2abcd7418e286c058615d581078fd85",
+    "voice-availability.json": "daa5fc8961f4c9c0dd87636283bfb99ca260cd45ce86d0027d526b4926552c4e"
+  }
+}

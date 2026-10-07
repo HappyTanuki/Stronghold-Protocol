@@ -1,0 +1,32 @@
+# syntax=docker/dockerfile:1.7
+ARG NODE_IMAGE=node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c
+FROM ${NODE_IMAGE} AS verify
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY upstream.tar /tmp/upstream.tar
+RUN tar -xf /tmp/upstream.tar -C /app && rm /tmp/upstream.tar
+COPY extras /extras
+COPY artifacts /artifacts
+RUN node /extras/scripts/apply-extras.mjs /app /extras /artifacts
+RUN npm ci --ignore-scripts --no-audit --no-fund && node tools/vendor.mjs
+ENV OVERLAY_APP_ROOT=/app
+RUN node --test /extras/tests/voice-settings.test.mjs test/ui/gameLogic.test.js test/i18n-data.test.js test/i18n-packs.test.js test/i18n-server.test.js test/i18n.test.js
+RUN node tools/i18n.mjs check ko --strict
+RUN test ! -e public/js/i18n/i18n.js && test ! -e public/i18n/ko/ko.css && test ! -e public/fonts/nanum-gothic
+RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
+FROM ${NODE_IMAGE} AS runtime
+WORKDIR /app
+ENV NODE_ENV=production PORT=3000 HOST=0.0.0.0
+LABEL org.opencontainers.image.revision="c2a2ef778cf728ff29b953b9842b2a39b1e9cbea" org.opencontainers.image.version="0.2.1-native-kr-extras"
+COPY --from=verify /app/package.json /app/package-lock.json ./
+COPY --from=verify /app/node_modules ./node_modules
+COPY --from=verify /app/shared ./shared
+COPY --from=verify /app/server ./server
+COPY --from=verify /app/data ./data
+COPY --from=verify /app/public ./public
+COPY --from=verify /app/packs ./packs
+COPY --from=verify /app/docs ./docs
+USER node
+EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 CMD node -e "fetch('http://127.0.0.1:'+process.env.PORT+'/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+CMD ["node","server/index.js"]

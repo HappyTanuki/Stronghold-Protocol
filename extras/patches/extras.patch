@@ -1,0 +1,218 @@
+diff --git a/public/js/audio.js b/public/js/audio.js
+index f7a8784..0647dbd 100644
+--- a/public/js/audio.js
++++ b/public/js/audio.js
+@@ -133,6 +133,25 @@ export function resolveBgm(manifest, key) {
+   return { intro: typeof t.intro === 'string' ? t.intro : null, loop: t.loop };
+ }
+ 
++/** Resolve one staged JA/KR cue. The manifest's upstream CN URL is never a source or fallback. */
++export function resolveVoiceCue(availability, selectedLanguage, charId, slot, lineIndex = 0) {
++  if (selectedLanguage !== 'ko' && selectedLanguage !== 'ja') return null;
++  if (typeof charId !== 'string' || !/^[A-Za-z0-9_-]+$/.test(charId) || typeof slot !== 'string') return null;
++  if (!Number.isInteger(lineIndex) || lineIndex < 0) return null;
++  const line = availability?.characters?.[charId]?.[slot]?.find((item) => item?.index === lineIndex);
++  if (!line || typeof line.cue !== 'string' || !/^[A-Za-z0-9_-]+\.mp3$/i.test(line.cue)) return null;
++  const candidate = (language, folder) => {
++    const entry = line[language];
++    const expectedUrl = `/assets/audio/voice/${folder}/${charId}/${line.cue}`;
++    const expectedAssetPath = expectedUrl.slice('/assets/'.length);
++    if (entry?.available !== true || entry.url !== expectedUrl || entry.assetPath !== expectedAssetPath) return null;
++    return entry;
++  };
++  const japanese = () => candidate('ja', 'jp');
++  if (selectedLanguage === 'ja') return japanese();
++  return candidate('kr', 'kr') || japanese();
++}
++
+ /**
+  * The last round that plays 无畏者 (1–7); from the next round on it is 骑士之日 (8–13) — the official schedule
+  * (docs/ASSETS.md "BGM"; the two tracks are the 塞壬唱片 act13side battle themes).
+@@ -438,11 +457,13 @@ function isAudioResponse(res) {
+ }
+ export class AudioManager {
+   /**
+-   * @param {{ getManifest?: () => any, win?: any }} [opts]
++   * @param {{ getManifest?: () => any, getVoiceAvailability?: () => any, random?: () => number, win?: any }} [opts]
+    */
+   constructor(opts = {}) {
+     this.getManifest = typeof opts.getManifest === 'function' ? opts.getManifest : () => null;
++    this.getVoiceAvailability = typeof opts.getVoiceAvailability === 'function' ? opts.getVoiceAvailability : () => null;
+     this.random = typeof opts.random === 'function' ? opts.random : Math.random;   // a unit sound's chance (mix.p)
++    this.voiceLanguage = 'ko';
+     this.win = opts.win ?? (typeof window !== 'undefined' ? window : null);
+     this.ctx = null;
+     this.master = null;
+@@ -596,6 +617,16 @@ export class AudioManager {
+     this._applyVolumes();
+   }
+ 
++  /** Select Korean (with same-cue Japanese fallback) or Japanese-only operator voices. */
++  setVoiceLanguage(language) {
++    if (language !== 'ko' && language !== 'ja') {
++      this.voiceLanguage = 'ko';
++      return false;
++    }
++    this.voiceLanguage = language;
++    return true;
++  }
++
+   _applyVolumes() {
+     if (!this.ctx) return;
+     try {
+@@ -836,8 +867,17 @@ export class AudioManager {
+     try {
+       if (!this.ctx || !this.voiceGain || this.volumes.muted || this.volumes.voice <= 0) return false;
+       if (typeof charId !== 'string' || typeof slot !== 'string') return false;
+-      const line = this.getManifest()?.audio?.voice?.[charId]?.[slot];
+-      const url = Array.isArray(line) ? line[Math.floor(Math.random() * line.length)] : line;
++      const lines = this.getVoiceAvailability()?.characters?.[charId]?.[slot];
++      if (!Array.isArray(lines)) return false;
++      const candidates = lines.map((line, index) => ({
++        index: Number.isInteger(line?.index) ? line.index : index,
++        entry: resolveVoiceCue(this.getVoiceAvailability(), this.voiceLanguage, charId, slot,
++          Number.isInteger(line?.index) ? line.index : index),
++      })).filter((item) => item.entry);
++      const chosen = Number.isInteger(o.lineIndex)
++        ? candidates.find((item) => item.index === o.lineIndex)
++        : candidates[Math.min(candidates.length - 1, Math.max(0, Math.floor(this.random() * candidates.length)))];
++      const url = chosen?.entry?.url;
+       if (typeof url !== 'string' || !url) return false;
+       const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+       const verdict = this.voiceGate.request(slot, o.unitKey ?? null, now);
+@@ -1033,19 +1073,25 @@ export class AudioManager {
+ }
+ 
+ let manifestGetter = () => null;
++let voiceAvailabilityGetter = () => null;
+ /** App-wide audio manager. */
+-export const audio = new AudioManager({ getManifest: () => manifestGetter() });
++export const audio = new AudioManager({ getManifest: () => manifestGetter(), getVoiceAvailability: () => voiceAvailabilityGetter() });
+ 
+ /**
+  * Wire the singleton to the app (called once by main.js): manifest source, settings and store-driven BGM.
+  * @param {{ getManifest: () => any, subscribe: (fn: (s:any, prev:any) => void) => () => void, getState: () => any,
+- *   selectRoute: (s:any) => string, settings?: { bgm:number, sfx:number, voice:number, muted:boolean } }} deps
++ *   selectRoute: (s:any) => string, getVoiceAvailability?: () => any,
++ *   settings?: { bgm:number, sfx:number, voice:number, voiceLanguage:'ko'|'ja', muted:boolean } }} deps
+  */
+ export function installAudio(deps) {
+   try {
+     manifestGetter = typeof deps?.getManifest === 'function' ? deps.getManifest : manifestGetter;
++    voiceAvailabilityGetter = typeof deps?.getVoiceAvailability === 'function' ? deps.getVoiceAvailability : voiceAvailabilityGetter;
+     audio.install();
+-    if (deps?.settings) audio.setVolumes(deps.settings);
++    if (deps?.settings) {
++      audio.setVolumes(deps.settings);
++      audio.setVoiceLanguage(deps.settings.voiceLanguage);
++    }
+     if (typeof deps?.subscribe === 'function' && typeof deps?.getState === 'function') {
+       const sync = (s) => {
+         try {
+diff --git a/public/js/data.js b/public/js/data.js
+index f3b725b..e5d4ee0 100644
+--- a/public/js/data.js
++++ b/public/js/data.js
+@@ -44,6 +44,7 @@ export const DATA_FILES = Object.freeze({
+   choices: 'choices.json',
+   config: 'config.json',
+   assets: 'assets.json',
++  voiceAvailability: 'voice-availability.json',
+   // 补位 stand-ins (DATA.md §18): the bodies the 干员持有 screen, the cards and the detail card compose (shared/standIn.js)
+   backups: 'backups.json',
+   // Optional art extracted from a local game client (DESIGN §13): { groups: { '<subdir>': { name: { path, w, h } } } }.
+diff --git a/public/js/main.js b/public/js/main.js
+index 5b109e9..c2d9170 100644
+--- a/public/js/main.js
++++ b/public/js/main.js
+@@ -344,8 +344,9 @@ async function boot() {
+   installDiySync({ net });
+   net.attachBrowserHooks();
+   // Audio: unlock on first gesture, BGM follows the route / match phase (js/audio.js).
+-  installAudio({ getManifest: () => data.get('assets'), subscribe: store.subscribe, getState: store.get, selectRoute, settings: settingsStore.get() });
++  installAudio({ getManifest: () => data.get('assets'), getVoiceAvailability: () => data.get('voiceAvailability'), subscribe: store.subscribe, getState: store.get, selectRoute, settings: settingsStore.get() });
+   data.load('assets').catch(() => {});
++  data.load('voiceAvailability').catch(() => {});
+   // Warm the data cache in the background (missing files are tolerated).
+   data.loadAll('config').catch(() => {});
+   // Optional local-client art manifest (emotes, tutorial pages, official UI sprites; DESIGN §13).
+diff --git a/public/js/ui/gameLogic/settings.js b/public/js/ui/gameLogic/settings.js
+index e698bc3..c4ec8fd 100644
+--- a/public/js/ui/gameLogic/settings.js
++++ b/public/js/ui/gameLogic/settings.js
+@@ -7,13 +7,13 @@ import { DEFAULT_HOTKEYS, sanitizeHotkeys } from './shortcuts.js';
+ // ---- settings ------------------------------------------------------------------------------------------------------
+ 
+ /** keys: the in-match shortcuts' key map (ui/gameLogic/shortcuts.js; settings → 快捷键). */
+-export const DEFAULT_SETTINGS = Object.freeze({ bgm: 0.6, sfx: 0.8, voice: 0.8, muted: false, damageNumbers: true, quality: 'high', keys: DEFAULT_HOTKEYS });
++export const DEFAULT_SETTINGS = Object.freeze({ bgm: 0.6, sfx: 0.8, voice: 0.8, voiceLanguage: 'ko', muted: false, damageNumbers: true, quality: 'high', keys: DEFAULT_HOTKEYS });
+ const QUALITIES = ['high', 'medium', 'low'];
+ 
+ /**
+  * Sanitize persisted settings.
+  * @param {any} raw
+- * @returns {{ bgm: number, sfx: number, voice: number, muted: boolean, damageNumbers: boolean, quality: 'high'|'medium'|'low',
++ * @returns {{ bgm: number, sfx: number, voice: number, voiceLanguage: 'ko'|'ja', muted: boolean, damageNumbers: boolean, quality: 'high'|'medium'|'low',
+  *   keys: Record<'refresh'|'freeze'|'levelUp'|'retreat'|'sell'|'ready', string> }}
+  */
+ export function sanitizeSettings(raw) {
+@@ -23,6 +23,7 @@ export function sanitizeSettings(raw) {
+     bgm: vol(r.bgm, DEFAULT_SETTINGS.bgm),
+     sfx: vol(r.sfx, DEFAULT_SETTINGS.sfx),
+     voice: vol(r.voice, DEFAULT_SETTINGS.voice),
++    voiceLanguage: r.voiceLanguage === 'ja' ? 'ja' : 'ko',
+     muted: typeof r.muted === 'boolean' ? r.muted : DEFAULT_SETTINGS.muted,
+     damageNumbers: typeof r.damageNumbers === 'boolean' ? r.damageNumbers : DEFAULT_SETTINGS.damageNumbers,
+     quality: QUALITIES.includes(r.quality) ? r.quality : DEFAULT_SETTINGS.quality,
+diff --git a/public/js/ui/settings.js b/public/js/ui/settings.js
+index d7db406..cdf23a6 100644
+--- a/public/js/ui/settings.js
++++ b/public/js/ui/settings.js
+@@ -13,7 +13,7 @@ import { audio } from '../audio.js';
+ import { openGuide } from './guide.js';
+ import { detectFeatures } from './device.js';
+ import { LangToggle, machineTranslationNote } from './lang.js';
+-import { t, tc, N_ } from '../../../shared/i18n.js';
++import { t, tc, N_, langInfo } from '../../../shared/i18n.js';
+ 
+ const cx = (...p) => p.flat().filter(Boolean).join(' ');
+ 
+@@ -23,8 +23,10 @@ export const settingsStore = createStore(sanitizeSettings(loadPref('settings', n
+ settingsStore.subscribe((s) => {
+   savePref('settings', sanitizeSettings(s));
+   audio.setVolumes(s);
++  audio.setVoiceLanguage(s.voiceLanguage);
+ });
+ audio.setVolumes(settingsStore.get());
++audio.setVoiceLanguage(settingsStore.get().voiceLanguage);
+ 
+ /** @param {Partial<ReturnType<typeof sanitizeSettings>>} patch */
+ export function updateSettings(patch) {
+@@ -164,6 +166,14 @@ export function SettingsModal({ open, onClose }) {
+       ${mtNote ? html`<p class="set-hint set-lang-note" data-testid="lang-mt-note">${mtNote}</p>` : null}
+       <${Slider} label=${t('背景音乐')} micro="BGM" icon="play" value=${s.bgm} onInput=${(v) => updateSettings({ bgm: v })} />
+       <${Slider} label=${t('干员语音')} micro="VOICE" icon="mic" value=${s.voice} onInput=${(v) => updateSettings({ voice: v })} />
++      <label class="set-row">
++        <span class="set-row__label">VOICE LANGUAGE</span>
++        <select data-testid="voice-language" name="voiceLanguage" class="set-select" aria-label="Voice language"
++          value=${s.voiceLanguage} onChange=${(e) => updateSettings({ voiceLanguage: e.currentTarget.value })}
++          style="grid-column:2/4;justify-self:start;min-width:.9rem;height:.38rem;padding:0 .12rem;background:var(--bg);border:1px solid var(--line-2);color:var(--text-hi);font-size:.16rem">
++          <option value="ko">${langInfo('ko')?.name || 'Korean'}</option><option value="ja">${langInfo('ja')?.name || 'Japanese'}</option>
++        </select>
++      </label>
+       <${Slider} label=${t('音效')} micro="SFX" icon="signal" value=${s.sfx}
+         onInput=${(v) => { updateSettings({ sfx: v }); if (!tested) { setTested(true); setTimeout(() => setTested(false), 400); audio.sfx('click'); } }} />
+       <${Toggle} label=${t('静音')} micro="MUTE" value=${s.muted} onChange=${(v) => updateSettings({ muted: v })} />
+diff --git a/test/ui/gameLogic.test.js b/test/ui/gameLogic.test.js
+index 7a383f7..a0e1b07 100644
+--- a/test/ui/gameLogic.test.js
++++ b/test/ui/gameLogic.test.js
+@@ -642,7 +642,7 @@ describe('keyboard & settings', () => {
+   test('sanitizeSettings', () => {
+     assert.deepEqual(sanitizeSettings(null), { ...DEFAULT_SETTINGS });
+     assert.deepEqual(sanitizeSettings({ bgm: 3, sfx: -1, voice: 2, muted: 'yes', damageNumbers: false, quality: 'ultra' }),
+-      { bgm: 1, sfx: 0, voice: 1, muted: false, damageNumbers: false, quality: 'high', keys: { ...DEFAULT_SETTINGS.keys } },
++      { bgm: 1, sfx: 0, voice: 1, voiceLanguage: 'ko', muted: false, damageNumbers: false, quality: 'high', keys: { ...DEFAULT_SETTINGS.keys } },
+       'a saved profile without `keys` (before 0.2.0) gets the default key map (test/ui/feedback5-hotkeys.test.js)');
+     assert.equal(sanitizeSettings({ bgm: 0.5 }).voice, DEFAULT_SETTINGS.voice, 'a saved profile without `voice` gets the default');
+     assert.equal(sanitizeSettings({ bgm: 0.333 }).bgm, 0.33);
