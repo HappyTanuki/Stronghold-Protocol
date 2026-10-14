@@ -13,9 +13,10 @@ import { SURFACES, SOURCES, surfaceUV, resolveUvTable, cleanSurface, sideRect, t
 import { parseObj, mapMesh } from '../../public/js/render/board3d/obj.js';
 import {
   buildBoard, classifyStage, heightOf, AREAS, areaFor, unionAreas, objToBoard, boxProjectUV, tube, Geom, uvAt, ROWS, COLS,
+  DEVICE_H, RAISED_FOOT,
 } from '../../public/js/render/board3d/layout.js';
 import { BoardScene, gatePulse, DIR_TURNS, boxData, LIGHTING } from '../../public/js/render/board3d/scene.js';
-import { loadBoardPack, resetBoardPack, PACK_IMAGES } from '../../public/js/render/board3d/load.js';
+import { loadBoardPack, loadThree, resetBoardPack, PACK_IMAGES } from '../../public/js/render/board3d/load.js';
 import { parseStage } from '../../public/js/render/tiles.js';
 import { TILE_H } from '../../public/js/render/style.js';
 import { presetCamera, syncThreeCamera } from '../../public/js/render/projection.js';
@@ -173,6 +174,33 @@ describe('board geometry (layout.js)', () => {
     assert.ok(!buildBoard(stages.act1autochess_m02).devices.some((d) => d.kind === 'crate'));
   });
 
+  test('#569: the device slabs (射击台 / 特制水上平台 / 封印的地面) are repeated for an official scene, their sides reaching under its ground; nothing else is', () => {
+    const SLAB = new Set(['platform', 'waterPlatform', 'sealedFloor']);
+    for (const [id, st] of Object.entries(stages)) {
+      if (!Array.isArray(st?.rows)) continue;
+      for (const area of [AREAS.normal, AREAS.boss]) {
+        const b = buildBoard(st, { area });
+        const slabs = b.devices.filter((d) => SLAB.has(d.kind));
+        const decals = slabs.filter((d) => d.kind === 'sealedFloor').length;
+        // per slab four sides, plus its top: a plate (raised) or the hazard decal of a sealed floor (raisedDecal)
+        assert.equal(b.buckets.raised.vertexCount, (slabs.length * 5 - decals) * 4, `${id}: raised quads`);
+        assert.equal(b.buckets.raisedDecal.vertexCount, decals * 4, `${id}: raised decal quads`);
+        const P = b.buckets.raised.position;
+        for (let i = 0; i < P.length; i += 3) {
+          const d = slabs.find((x) => Math.abs(P[i] - x.c) <= 0.5 && Math.abs(P[i + 1] - x.r) <= 0.5);
+          assert.ok(d, `${id}: every raised vertex is on a slab tile`);
+          const h = b.grid[d.r][d.c].h;
+          assert.ok(near(P[i + 2], h + DEVICE_H[d.kind]) || near(P[i + 2], h - RAISED_FOOT), `${id}: a slab top or its foot, z ${P[i + 2]}`);
+        }
+      }
+    }
+    // the report's 射击台 beside the blue gate (战场#03) and the water platforms (战场#05 上半) are there; the 'h' high
+    // ground of act2 m01 / m02 is the scenes' own geometry and is not repeated
+    assert.ok(buildBoard(stages.act1autochess_m03, { area: AREAS.normal }).buckets.raised.vertexCount > 0);
+    assert.equal(buildBoard(stages.act1autochess_m05, { area: AREAS.normal }).devices.filter((d) => d.kind === 'waterPlatform').length, 16);
+    for (const id of ['act2autochess_m01', 'act2autochess_m02']) assert.equal(buildBoard(stages[id], { area: AREAS.normal }).buckets.raised.vertexCount, 0, id);
+  });
+
   test('malformed stages never throw and still build an island', () => {
     for (const st of [null, {}, { rows: ['xyz'] }, { rows: Array(19).fill('r'.repeat(21)), devices: [{ role: 'crate', pos: [3, 3] }, { role: 'crate', pos: 'x' }] }]) {
       const b = buildBoard(st, { area: AREAS.all });
@@ -303,6 +331,30 @@ describe('BoardScene (three.js scene graph, stub renderer)', () => {
 });
 
 describe('asset pack loader (fake store)', () => {
+  test('resetBoardPack lets a later three.js import try again after three failures', async () => {
+    resetBoardPack();
+    const missing = new URL('./no-such-three.mjs', import.meta.url).href;
+    for (let i = 0; i < 3; i++) assert.equal(await loadThree(missing), null);
+    assert.equal(await loadThree(missing), null, 'three failures stop further imports');
+    resetBoardPack();
+    const mod = await loadThree(new URL('./fake-three.mjs', import.meta.url).href);
+    assert.equal(typeof mod?.WebGLRenderer, 'function');
+    resetBoardPack();
+  });
+  test('a transient diffuse-image failure is retried by the next mount instead of cached as permanent 2D', async () => {
+    resetBoardPack();
+    let calls = 0;
+    const store = { local: async () => ({ groups: {} }), localUrl: (g, n) => n === 'TX_autochessi_D' ? '/test/atlas.png' : null,
+      image: async () => ++calls === 1 ? null : { width: 8, height: 8 } };
+    const original = globalThis.fetch;
+    globalThis.fetch = async () => ({ ok: false });
+    try {
+      assert.equal(await loadBoardPack(store), null);
+      const pack = await loadBoardPack(store);
+      assert.ok(pack?.images.D); assert.equal(calls, 2);
+      assert.equal(await loadBoardPack(store), pack, 'successful pack remains shared');
+    } finally { globalThis.fetch = original; resetBoardPack(); }
+  });
   test('loads images through the store and meshes through fetch; null without the diffuse atlas', async () => {
     resetBoardPack();
     const manifest = { groups: {} };

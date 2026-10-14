@@ -354,7 +354,8 @@ export class EffectDispatcher {
         const repeat = hook === 'onGain' ? this.investRepeat(ps) : 1;
         const loc = ps.find(self.uid);
         const where = loc ? (loc.area === 'board' ? 'board' : loc.area) : 'trigger';
-        this._call(ps, key, h, hook, { kind: 'garrison', key, piece: self, garrisonId: gid, garrison: g, bb: g.bb || {}, bbStr: g.bbStr || {}, where, trigger: true, triggeredBy }, ev, repeat);
+        this._call(ps, key, h, hook, { kind: 'garrison', key, piece: self, copiedFrom: asPiece ? piece : null,
+          garrisonId: gid, garrison: g, bb: g.bb || {}, bbStr: g.bbStr || {}, where, trigger: true, triggeredBy }, ev, repeat);
         n++;
       }
     } finally {
@@ -479,6 +480,7 @@ export function makeCtx(m, ps, source, hook, ev = null) {
     lp: () => ps.lp,
     alive: () => ps.alive,
     bandId: () => ps.bandId,
+    teamMedicGranted: () => m.teamMedicGranted(),
     shopLevel: () => ps.shop.level,
     bond: (id) => (ps.bonds[id] ? { ...ps.bonds[id] } : null),
     bonds: () => Object.fromEntries(Object.entries(ps.bonds).map(([k, v]) => [k, { ...v }])),
@@ -568,6 +570,7 @@ export function makeCtx(m, ps, source, hook, ev = null) {
         source: opts.source || source.key || 'effect',
         toTemp: !!opts.toTemp,
         deferMerge: ps._deferItemMerge > 0,
+        requirePool: opts.requirePool !== false,
       });
       return p ? view(p) : null;
     },
@@ -582,7 +585,7 @@ export function makeCtx(m, ps, source, hook, ev = null) {
         return typeof opts.filter === 'function' ? !!opts.filter(id) : true;
       };
       const extra = typeof ps.diyStockEntries === 'function' ? ps.diyStockEntries() : null;
-      return m.pool.roll(m.rngMeta, { maxTier: Number.isInteger(opts.maxTier) ? opts.maxTier : 6, tier: Number.isInteger(opts.tier) ? opts.tier : null, filter: f, extra });
+      return m.pool.roll(m.rngMeta, { maxTier: Number.isInteger(opts.maxTier) ? opts.maxTier : 6, tier: Number.isInteger(opts.tier) ? opts.tier : null, filter: f, extra, ignoreCounts: opts.ignoreCounts === true });
     },
     rollItem: (opts = {}) => m.rollItemId(opts),
     /**

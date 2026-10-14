@@ -27,7 +27,7 @@
 export { clamp, tileKey } from './gameLogic/shared.js';
 export { phaseMode, isCombatPhase, showDeadPill, isBossPhase } from './gameLogic/phases.js';
 export { prepCamera, prepCameraFor, foldCamera, deployFieldOf, fieldTile, boardTileOf, ownerBandId, teamFrameIds } from './gameLogic/camera.js';
-export { phaseBanner, prepCapsuleLabel, countdownState, phaseTotalSeconds } from './gameLogic/phases.js';
+export { phaseBanner, prepCapsuleLabel, countdownState, phaseTotalSeconds, deployOrder, roundStartReplay } from './gameLogic/phases.js';
 export { RESULT_BOX_MS, ownRoundLoss, battleOverSfx, roundResultBox, uniteResultBox, battleResultBox } from './gameLogic/phases.js';
 export { STATUS_META } from './gameLogic/format.js';
 export { sortedPlayers } from './gameLogic/shared.js';
@@ -35,7 +35,7 @@ export { ownFieldId, homeFieldId, cycleField, watchTarget, switcherLabel, fieldL
 export { sortBonds, bondTier, nextThreshold, grantedBonds, pieceBondIds, morphPairings, HARMONY_BOND, harmonyMembers, bondMembers, memberHeadCount, bannedPerBond, disabledBondSets, briefingBondTip, modeOffBonds, bandOffBonds, bandOffLine } from './gameLogic/bonds.js';
 export { priceTone, mergeProgress, mergeTarget, handFull, completesMerge, offerHeader, shopBlockReason, readyFundsPrompt, readyShopFold } from './gameLogic/shop.js';
 export { deploySets, stageOverrides, deployMap, effectiveStage, indexPieces, placementContext, piecePosition, tileAllows, summonRange, summonExcluded, canPlace, equipReplaces, equipMerges, boardTargets, dropIntent, dropFailureReason } from './gameLogic/placement.js';
-export { terrainInfo, deviceInfo, deviceTipAt, noteDeviceUnits } from './gameLogic/terrain.js';
+export { terrainInfo, deviceInfo, deviceTipAt, noteDeviceUnits, deviceUnitsForEntry } from './gameLogic/terrain.js';
 export { normalizeDraft, normalizeSp, normalizePersonalChoice } from './gameLogic/draft.js';
 export { groupEnemies, PEN, penZoneTiles, penPlacement, previewEnemyKey, factionTypes } from './gameLogic/enemies.js';
 export { snapHud, bossFrac, bossPctText, hasFlag, UF, attackInterval, fmtNum, rangeGridBox } from './gameLogic/format.js';
